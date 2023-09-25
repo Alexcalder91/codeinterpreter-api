@@ -34,7 +34,11 @@ from langchain.tools.convert_to_openai import format_tool_to_openai_function
 
 @dataclass
 class _FunctionsAgentAction(AgentAction):
+    tool: str  # Added this line to accept 'tool' argument
+    tool_input: Any  # You might also need to add this if 'tool_input' is also passed
+    log: str  # Added this line to accept 'log' argument
     message_log: List[BaseMessage]
+
 
 
 def _convert_agent_action_to_messages(
