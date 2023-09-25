@@ -35,9 +35,9 @@ from langchain.tools.convert_to_openai import format_tool_to_openai_function
 @dataclass
 class _FunctionsAgentAction(AgentAction):
     tool: str  # Added this line to accept 'tool' argument
-    tool_input: Any  # You might also need to add this if 'tool_input' is also passed
-    log: str  # Added this line to accept 'log' argument
+    tool_input: Any  # Added this line to accept 'tool_input' argument, if 'tool_input' is also passed
     message_log: List[BaseMessage]
+
 
 
 
@@ -126,12 +126,6 @@ def _parse_ai_message(message: BaseMessage) -> Union[AgentAction, AgentFinish]:
                     f"the `arguments` is not valid JSON."
                 )
 
-        # HACK HACK HACK:
-        # The code that encodes tool input into Open AI uses a special variable
-        # name called `__arg1` to handle old style tools that do not expose a
-        # schema and expect a single string argument as an input.
-        # We unpack the argument here if it exists.
-        # Open AI does not support passing in a JSON array as an argument.
         if "__arg1" in _tool_input:
             tool_input = _tool_input["__arg1"]
         else:
@@ -140,13 +134,14 @@ def _parse_ai_message(message: BaseMessage) -> Union[AgentAction, AgentFinish]:
         content_msg = "responded: {content}\n" if message.content else "\n"
 
         return _FunctionsAgentAction(
-            tool=function_name,
-            tool_input=tool_input,
+            tool=function_name,  # Passing 'tool' argument
+            tool_input=tool_input,  # Passing 'tool_input' argument
             log=f"\nInvoking: `{function_name}` with `{tool_input}`\n{content_msg}\n",
             message_log=[message],
         )
 
     return AgentFinish(return_values={"output": message.content}, log=message.content)
+
 
 
 class OpenAIFunctionsAgent(BaseSingleActionAgent):
