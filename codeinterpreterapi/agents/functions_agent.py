@@ -136,7 +136,7 @@ def _parse_ai_message(message: BaseMessage) -> Union[AgentAction, AgentFinish]:
         return _FunctionsAgentAction(
             tool=function_name,  # Passing 'tool' argument
             tool_input=tool_input,  # Passing 'tool_input' argument
-            log=f"\nInvoking: `{function_name}` with `{tool_input}`\n{content_msg}\n",
+            #log=f"\nInvoking: `{function_name}` with `{tool_input}`\n{content_msg}\n",
             message_log=[message],
         )
 
